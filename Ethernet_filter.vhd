@@ -1,3 +1,5 @@
+
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -39,6 +41,9 @@ architecture rtl of eth_rx_buffer is
 
   -- Output registers
   signal m_tvalid_r : std_logic := '0';
+  
+  --variable to keep s_tready=0 till idle state after s_tlast came=1 occur
+  signal flag : std_logic;
 
 
 begin
@@ -107,6 +112,7 @@ begin
         when COMPARE =>
         s_tready <= '1';
         buffer1(12)<=s_tlast & s_tdata;
+        flag<='0';
          if ((buffer1(6) = '0' & x"66" and buffer1(7)= '0' & x"0C" and buffer1(8) = '0' & x"0d" and buffer1(9)='0' & x"0E" and buffer1(10) = '0' & x"0F" and buffer1(11)= '0' & x"10") or 
             (buffer1(6) = '0' & x"01" and buffer1(7)= '0' & x"02" and buffer1(8) = '0' & x"03" and buffer1(9)='0' & x"04" and buffer1(10) = '0' & x"05" and buffer1(11)= '0' & x"06") or 
             (buffer1(6) = '0' & x"05" and buffer1(7)= '0' & x"06" and buffer1(8) = '0' & x"07" and buffer1(9)='0' & x"08" and buffer1(10) = '0' & x"09" and buffer1(11)= '0' & x"0a") or 
@@ -125,6 +131,12 @@ begin
           when SEND =>
             s_tready <= '1'; 
             m_tvalid_r<='0';
+            --when the last byte of the packet received, FSM should not receive furthur frames till idle state
+            if s_tlast= '1' or flag= '1' then
+                s_tready <= '0';
+                flag<='1';
+            end if;
+                
             if m_tready = '1' then
                m_tvalid_r <= '1';
             --store the incoming data.
@@ -141,6 +153,7 @@ begin
                 buffer1(2)  <= buffer1(3);
                 buffer1(1)  <= buffer1(2);
                 buffer1(0)  <= buffer1(1);
+                
                 
 
                 if buffer1(0)(8)='1' then --last byte arrived 
