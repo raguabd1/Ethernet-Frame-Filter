@@ -1,3 +1,28 @@
+----------------------------------------------------------------------------------
+-- Company: Dexcel Electronics Designs.
+-- Engineer: Raghavendra Mahalatkar B S
+-- 
+-- Create Date: 20.11.2025 12:06:00
+-- Design Name: 
+-- Module Name: Eth_buff - Behavioral
+-- Project Name: 
+-- Target Devices: 
+-- Tool Versions: 
+-- Description: 
+-- 
+-- Dependencies: 
+-- 
+-- Revision:
+-- Revision 0.01 - File Created
+-- Additional Comments:
+-- 
+----------------------------------------------------------------------------------
+
+--Features Supported
+
+--If incoming s_tlast arrives at capture state it will be considered as invalied frame.
+--If s_tlast arrived at input, make s_tready=0 keep it till idle state till full frame gets transfered.
+--Transition from send state to idle state happen only after transfering full incoming frame is finished.
 
 
 library ieee;
@@ -170,3 +195,5 @@ begin
     end if;
   end process;
 end rtl;
+ 
+
