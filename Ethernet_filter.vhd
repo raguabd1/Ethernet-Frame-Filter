@@ -25,6 +25,33 @@
 --Transition from send state to idle state happen only after transfering full incoming frame is finished.
 
 
+----------------------------------------------------------------------------------
+-- Company: Dexcel Electronics Designs.
+-- Engineer: Raghavendra Mahalatkar B S
+-- 
+-- Create Date: 20.11.2025 12:06:00
+-- Design Name: 
+-- Module Name: Eth_buff - Behavioral
+-- Project Name: 
+-- Target Devices: 
+-- Tool Versions: 
+-- Description: 
+-- 
+-- Dependencies: 
+-- 
+-- Revision:
+-- Revision 0.01 - File Created
+-- Additional Comments:
+-- 
+----------------------------------------------------------------------------------
+
+--Features Supported
+
+--If incoming s_tlast arrives at capture state it will be considered as invalied frame.
+--If s_tlast arrived at input, make s_tready=0 keep it till idle state till full frame gets transfered.
+--Transition from send state to idle state happen only after transfering full incoming frame is finished.
+
+
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
@@ -126,9 +153,10 @@ begin
                 ptr <= 0;
                 state <= COMPARE;
               end if;
-              --if last byte received before first 12 bytes=>invalid frame.
+              --if last byte received before first 12 bytes=>invalid frame, make s_tready <= '0';.
               if (s_tlast='1')  then
                 state <= IDLE;
+                s_tready <= '0'; 
               end if;
             end if;
             
@@ -195,5 +223,7 @@ begin
     end if;
   end process;
 end rtl;
+ 
+
  
 
