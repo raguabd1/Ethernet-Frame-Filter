@@ -1,0 +1,3 @@
+# Ethernet-Frame-Filter
+
+This module implements a finite state machine (FSM) that filters incoming Ethernet frames based on destination MAC addresses. It receives packets from the RX MAC interface, extracts the destination MAC, and compares it against a configurable set of allowed addresses. If the MAC matches, the FSM forwards the entire packet to the output interface with a fixed latency of 12 clock cycles. if not, it discards the frame immediately. The FSM transitions through states for idle, MAC checking, forwarding, and discarding, ensuring minimal buffering and deterministic performance. This design is ideal for hardware-based access control, traffic filtering, or FPGA-based Ethernet switches where predictable, low-latency packet handling is required.
